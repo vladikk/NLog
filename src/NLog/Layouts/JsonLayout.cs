@@ -107,30 +107,35 @@ namespace NLog.Layouts
                 }
                 first = false;
 
-                var parametersText = new StringBuilder();
-                parametersText.Append("{");
-
-                var firstProperty = true;
-                foreach (var property in logEvent.Properties)
-                {
-                    if (!firstProperty)
-                    {
-                        parametersText.Append(", ");
-                    }
-                    firstProperty = false;
-
-                    string valueText = JsonHelper.Escape(property.Value.ToString());
-                    parametersText.AppendFormat("\"{0}\": \"{1}\"", property.Key, valueText);
-                }
-
-                parametersText.Append("}");
-
+                var parametersText = BuildJsonParametersObject(logEvent);
                 sb.AppendFormat("\"{0}\": {1}", PropertiesRenderer.Name, parametersText);
             }
 
             sb.Append(" }");
 
             return sb.ToString();
+        }
+
+        private static string BuildJsonParametersObject(LogEventInfo logEvent)
+        {
+            var parametersText = new StringBuilder();
+            parametersText.Append("{");
+
+            var firstProperty = true;
+            foreach (var property in logEvent.Properties)
+            {
+                if (!firstProperty)
+                {
+                    parametersText.Append(", ");
+                }
+                firstProperty = false;
+
+                string valueText = JsonHelper.Escape(property.Value.ToString());
+                parametersText.AppendFormat("\"{0}\": \"{1}\"", property.Key, valueText);
+            }
+            parametersText.Append("}");
+            
+            return parametersText.ToString();
         }
     }
 }
