@@ -104,5 +104,48 @@ namespace NLog.UnitTests.Layouts
 
             Assert.Equal("{ \"date\": \"2010-01-01 12:34:56.0000\", \"level\": \"Info\", \"message\": \"hello,\\n\\r world\" }", jsonLayout.Render(ev));
         }
+
+        [Fact]
+        public void JsonLayoutRenderingPropertiesWithSignleProperty()
+        {
+            var jsonLayout = new JsonLayout()
+            {
+                Attributes =
+                    {
+                        new JsonAttribute("message", "${message}")
+                    },
+                PropertiesRenderer = new JsonPropertiesRenderer("custom-properties")
+            };
+
+            var ev = new LogEventInfo();
+            ev.TimeStamp = new DateTime(2010, 01, 01, 12, 34, 56);
+            ev.Level = LogLevel.Info;
+            ev.Message = "hello, world";
+            ev.Properties["aaa"] = "bbb";
+
+            Assert.Equal("{ \"message\": \"hello, world\", \"custom-properties\": {\"aaa\": \"bbb\"} }", jsonLayout.Render(ev));
+        }
+
+        [Fact]
+        public void JsonLayoutRenderingPropertiesWithMultipleProperties()
+        {
+            var jsonLayout = new JsonLayout()
+            {
+                Attributes =
+                    {
+                        new JsonAttribute("message", "${message}")
+                    },
+                PropertiesRenderer = new JsonPropertiesRenderer("custom-properties")
+            };
+
+            var ev = new LogEventInfo();
+            ev.TimeStamp = new DateTime(2010, 01, 01, 12, 34, 56);
+            ev.Level = LogLevel.Info;
+            ev.Message = "hello, world";
+            ev.Properties["aaa"] = "bbb";
+            ev.Properties["ccc"] = "ddd";
+
+            Assert.Equal("{ \"message\": \"hello, world\", \"custom-properties\": {\"aaa\": \"bbb\", \"ccc\": \"ddd\"} }", jsonLayout.Render(ev));
+        }
     }
 }

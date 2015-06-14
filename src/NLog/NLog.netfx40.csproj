@@ -159,6 +159,7 @@
     <Compile Include="Internal\ISmtpClient.cs" />
     <Compile Include="Internal\ISupportsInitialize.cs" />
     <Compile Include="Internal\IUsesStackTrace.cs" />
+    <Compile Include="Internal\JsonHelper.cs" />
     <Compile Include="Internal\LocalizableAttribute.cs" />
     <Compile Include="Internal\LoggerConfiguration.cs" />
     <Compile Include="Internal\MultiFileWatcher.cs" />
@@ -279,6 +280,7 @@
     <Compile Include="Layouts\CsvQuotingMode.cs" />
     <Compile Include="Layouts\JsonAttribute.cs" />
     <Compile Include="Layouts\JsonLayout.cs" />
+    <Compile Include="Layouts\JsonPropertiesRenderer.cs" />
     <Compile Include="Layouts\Layout.cs" />
     <Compile Include="Layouts\LayoutAttribute.cs" />
     <Compile Include="Layouts\LayoutParser.cs" />

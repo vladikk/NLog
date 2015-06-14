@@ -31,6 +31,8 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 // 
 
+using NLog.Internal;
+
 namespace NLog.Layouts
 {
     using Config;
@@ -62,6 +64,12 @@ namespace NLog.Layouts
         public IList<JsonAttribute> Attributes { get; private set; }
 
         /// <summary>
+        /// Gets the JsonParameters objects.
+        /// </summary>
+        /// <docgen category='CSV Options' order='10' />
+        public JsonPropertiesRenderer PropertiesRenderer { get; set; }
+
+        /// <summary>
         /// Formats the log event as a JSON document for writing.
         /// </summary>
         /// <param name="logEvent">The log event to be formatted.</param>
@@ -89,6 +97,35 @@ namespace NLog.Layouts
 
                     sb.AppendFormat("\"{0}\": \"{1}\"", col.Name, text);
                 }
+            }
+
+            if (PropertiesRenderer != null)
+            {
+                if (!first)
+                {
+                    sb.Append(", ");
+                }
+                first = false;
+
+                var parametersText = new StringBuilder();
+                parametersText.Append("{");
+
+                var firstProperty = true;
+                foreach (var property in logEvent.Properties)
+                {
+                    if (!firstProperty)
+                    {
+                        parametersText.Append(", ");
+                    }
+                    firstProperty = false;
+
+                    string valueText = JsonHelper.Escape(property.Value.ToString());
+                    parametersText.AppendFormat("\"{0}\": \"{1}\"", property.Key, valueText);
+                }
+
+                parametersText.Append("}");
+
+                sb.AppendFormat("\"{0}\": {1}", PropertiesRenderer.Name, parametersText);
             }
 
             sb.Append(" }");

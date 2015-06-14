@@ -31,6 +31,8 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 // 
 
+using NLog.Internal;
+
 namespace NLog.LayoutRenderers.Wrappers
 {
     using System;
@@ -70,70 +72,7 @@ namespace NLog.LayoutRenderers.Wrappers
         /// <returns>JSON-encoded string.</returns>
         protected override string Transform(string text)
         {
-            return this.JsonEncode ? DoJsonEscape(text) : text;
-        }
-
-        private static string DoJsonEscape(string text)
-        {
-            var sb = new StringBuilder(text.Length);
-
-            for (int i = 0; i < text.Length; ++i)
-            {
-                switch (text[i])
-                {
-                    case '"':
-                        sb.Append("\\\"");
-                        break;
-
-                    case '\\':
-                        sb.Append("\\\\");
-                        break;
-
-                    case '/':
-                        sb.Append("\\/");
-                        break;
-
-                    case '\b':
-                        sb.Append("\\b");
-                        break;
-
-                    case '\r':
-                        sb.Append("\\r");
-                        break;
-
-                    case '\n':
-                        sb.Append("\\n");
-                        break;
-
-                    case '\f':
-                        sb.Append("\\f");
-                        break;
-
-                    case '\t':
-                        sb.Append("\\t");
-                        break;
-
-                    default:
-                        if (NeedsEscaping(text[i]))
-                        {
-                            sb.Append("\\u");
-                            sb.Append(Convert.ToString((int)text[i], 16).PadLeft(4, '0'));
-                        }
-                        else
-                        {
-                            sb.Append(text[i]);
-                        }
-
-                        break;
-                }
-            }
-
-            return sb.ToString();
-        }
-
-        private static bool NeedsEscaping(char ch)
-        {
-            return ch < 32 || ch > 127;
+            return this.JsonEncode ? JsonHelper.Escape(text) : text;
         }
     }
 }
